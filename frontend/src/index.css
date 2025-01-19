@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* @import url('https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@100..900&display=swap'); */
+
+.m-plus-1 {
+  font-family: "M PLUS 1", serif !important;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
