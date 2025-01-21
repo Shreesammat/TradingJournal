@@ -1,7 +1,7 @@
 import CButton from "./CButton"
 import PropTypes from 'prop-types'
 
-function CCard({ title = 'Login', alternateText = 'already?' }) {
+function CCard({ title = 'Login', onclick2 , alternateText = 'already?', onAlternateClick='/'}) {
     return (
         <div className='flex  bg-yellowo h-3/4 w-1/2 border-black border-2 rounded-xl justify-center px-4 py-4 items-start' >
             <div className="w-3/4 max-w-sm flex flex-col justify-center items-center space-y-4">
@@ -18,14 +18,14 @@ function CCard({ title = 'Login', alternateText = 'already?' }) {
                 ></input>
                 <div className='w-full items-start'>
                     <a
-                        href=''
+                        href='/'
                         className='text-black hover:text-reddo font-medium text-sm'
                     >Forgot password?</a>
 
                 </div>
-                <CButton text={title} variant='pinko' className='w-full' />
+                <CButton text={title} variant='pinko' className='w-full' onclick={onclick2}/>
                 <a
-                href='' 
+                href={onAlternateClick} 
                 className='font-medium text-sm hover:text-reddo'
                 >
                     {alternateText}
@@ -37,7 +37,9 @@ function CCard({ title = 'Login', alternateText = 'already?' }) {
 
 CCard.propTypes = {
     title: PropTypes.string.isRequired,
-    alternateText: PropTypes.string.isRequired
+    alternateText: PropTypes.string.isRequired,
+    onAlternateClick: PropTypes.string.isRequired,
+    onclick2: PropTypes.func.isRequired
 }
 
 export default CCard

@@ -1,8 +1,8 @@
-import Signup from './pages/Signup'
+import { Outlet } from 'react-router-dom'
 
 export const App = () => {
   return (
-    <Signup/>
+    <Outlet/>
   )
 }
 

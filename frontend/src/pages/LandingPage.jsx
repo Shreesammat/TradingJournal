@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import CButton from '../components/CButton'
 import { Notebook } from 'lucide-react'
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   return (
     <div>
       {/* Nav bar */}
@@ -14,8 +16,8 @@ const LandingPage = () => {
           
           {/* Buttons */}
           <div className="space-x-4">
-            <CButton text='login' variant="greeno"/>
-            <CButton text='signup' variant="blueo"/>
+            <CButton text='login' variant="greeno" onclick={() => navigate("/login")}/>
+            <CButton text='signup' variant="blueo" onclick={() => navigate("/signup")}/>
           </div>
         </div>
         <div className='w-full h-[2px] bg-black'></div>
@@ -26,7 +28,7 @@ const LandingPage = () => {
         
         <div className='text-xl m-plus-1 text-black justify-self-start text-[36px] font-bold'>Your digital Trade journal...</div>
         <div className='flex space-x-4'>
-          <CButton text='Get started' variant='greeno'/>
+          <CButton text='Get started' variant='greeno' onclick={() => navigate("/signup")}/>
           <CButton text='Learn more' variant='blueo'/>
         </div>
       </div>
