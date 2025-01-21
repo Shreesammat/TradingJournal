@@ -11,6 +11,8 @@ export default {
         greeno: '#69db7c',// GREEN
         reddo: '#ff8787', //red
         blueo: '#4dabf7', // blue
+        yellowo: '#ffec99', // yellow
+        pinko: '#fcc2d7', //pink 
       }
     },
   },

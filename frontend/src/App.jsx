@@ -1,9 +1,8 @@
-
-import LandingPage from './pages/LandingPage'
+import Signup from './pages/Signup'
 
 export const App = () => {
   return (
-    <LandingPage/>
+    <Signup/>
   )
 }
 
