@@ -19,12 +19,17 @@ function CCard({ title = 'Login', alternateText = 'already?' }) {
                 <div className='w-full items-start'>
                     <a
                         href=''
-                        className='text-black hover:text-blueo font-medium text-sm'
+                        className='text-black hover:text-reddo font-medium text-sm'
                     >Forgot password?</a>
 
                 </div>
                 <CButton text={title} variant='pinko' className='w-full' />
-                <div className='text-sm'>{alternateText}</div>
+                <a
+                href='' 
+                className='font-medium text-sm hover:text-reddo'
+                >
+                    {alternateText}
+                </a>
             </div>
         </div>
     )
