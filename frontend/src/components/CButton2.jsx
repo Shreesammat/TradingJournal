@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 
 const CButton = ({text="button", onclick, variant='primary'}) => {
   const variants = {
-    greeno: 'bg-greeno hover:bg-greeno/90', //green
-    blueo: 'bg-blueo hover:bg-blueo/90', //blue
-    reddo: 'bg-reddo hover:bg-reddo/90', //red
-    pinko: 'bg-pinko hover:bg-pinko/90' //pink
+    primary: 'bg-greeno hover:bg-primary/90', 
+    secondary: 'bg-blueo hover:bg-secondary/90',
+    tertiary: 'bg-reddo hover:bg-tertiary/90', 
+    reddo: 'bg-pinko hover:bg-reddo/90',
+    greeno: 'bg-pinko hover:bg-greeno/90',
   };
 
   return (

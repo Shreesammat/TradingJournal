@@ -7,12 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#e9ecef', //BG GRAY
-        greeno: '#69db7c',// GREEN
-        reddo: '#ff8787', //red
-        blueo: '#4dabf7', // blue
-        yellowo: '#ffec99', // yellow
-        pinko: '#fcc2d7', //pink 
+        primary: '#FFFFFF', // White
+        secondary: '#040403', // Black
+        tertiary: '#F5F0F6', // Magnolia 
+        reddo: '#F72C25', // Red
+        greeno: '#65B891', // Green
       }
     },
   },

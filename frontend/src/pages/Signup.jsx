@@ -5,11 +5,12 @@ export default function Login() {
     return (
         <>
             <div className='flex bg-primary h-screen w-screen justify-center items-center'>
-                <CCard 
-                title='Signup' 
+                <CCard
+                title='Signup'
                 alternateText='Already have an account?'
                 onAlternateClick="/login"
-                onclick2 = {() => navigate('/dashboard')}   
+                onclick2 = {() => navigate('/dashboard')}
+                className={'bg-tertiary'} 
                 />
             </div>
         </>

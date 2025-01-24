@@ -11,6 +11,7 @@ export default function Login() {
                 alternateText='Create a new account instead?'
                 onAlternateClick="/signup"
                 onclick2 ={() => navigate('/dashboard')}
+                className={'bg-tertiary'}
                 />
             </div>
         </>
