@@ -16,8 +16,8 @@ const LandingPage = () => {
           
           {/* Buttons */}
           <div className="space-x-4">
-            <CButton1 text='login' variant="primary" className='hover:border-black/20 hover:border-2' onclick={() => navigate("/login")}/>
-            <CButton1 text='signup' variant="secondary" className='text-primary hover:bg-primary hover:text-secondary' onclick={() => navigate("/signup")}/>
+            <CButton1 text='login' variant="primary" tailStyle='hover:border-black/20 hover:border-2' onclick={() => navigate("/login")}/>
+            <CButton1 text='signup' variant="secondary" tailStyle='text-primary hover:bg-primary hover:text-secondary' onclick={() => navigate("/signup")}/>
           </div>
         </div>
         <div className='w-full h-[2px] bg-secondary'></div>
@@ -28,8 +28,8 @@ const LandingPage = () => {
         
         <div className='text-xl m-plus-1 text-secondary justify-self-start text-[36px] font-bold'>Your digital Trade journal...</div>
         <div className='flex space-x-4'>
-          <CButton1 text='Get started' variant='secondary' className='text-primary hover:bg-primary hover:text-secondary' onclick={() => navigate("/signup")}/>
-          <CButton1 text='Learn more' variant='primary' className='hover:border-black/20 hover:border-2'/>
+          <CButton1 text='Get started' variant='secondary' tailStyle='text-primary hover:bg-tertiary hover:text-secondary' onclick={() => navigate("/signup")}/>
+          <CButton1 text='Learn more' variant='primary' tailStyle='hover:border-black/20 hover:border-2'/>
         </div>
       </div>
     </div>

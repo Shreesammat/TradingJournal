@@ -1,10 +1,10 @@
 
 import PropTypes from 'prop-types';
 
-const CButton1 = ({text="button", onclick, variant='primary', className}) => {
+const CButton1 = ({text="button", onclick, variant='primary', tailStyle}) => {
   const variants = {
     primary: 'bg-primary hover:bg-primary/90', 
-    secondary: 'bg-secondary hover:bg-secondary/90',
+    secondary: 'bg-secondary hover:bg-primary ',
     tertiary: 'bg-tertiary hover:bg-tertiary/90', 
     reddo: 'bg-reddo hover:bg-reddo/90',
     greeno: 'bg-greeno hover:bg-greeno/90',
@@ -12,7 +12,7 @@ const CButton1 = ({text="button", onclick, variant='primary', className}) => {
 
   return (
     <button
-    className = {`${variants[variant] || variants.primary} py-2 px-4 rounded-xl text-secondary transition-colors font-semibold border-2 border-black ${className}`}
+    className = {`${variants[variant] || variants.primary} py-2 px-4 rounded-xl transition-colors font-semibold border-2 border-black ${tailStyle}`}
     onClick = {onclick}
     >
       {text}
@@ -24,7 +24,7 @@ CButton1.propTypes = {
     text: PropTypes.string.isRequired,
     onclick: PropTypes.func,
     variant: PropTypes.string.isRequired,
-    className: PropTypes.string
+    tailStyle: PropTypes.string
 }
 
 export default CButton1

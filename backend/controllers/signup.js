@@ -1,11 +1,8 @@
-const express = require('express');
-const {User} = require('./../db/connectdb')
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import {User} from '../db/connectdb.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const router = express.Router();
-
-router.post('/signup', async (req, res) => {
+const signup = async (req, res) => {
     const {username, email, password} = req.body;
 
     try {
@@ -29,9 +26,14 @@ router.post('/signup', async (req, res) => {
             {expiresIn: "1D"}
         )
 
-        return res.status(201).json({message: "Registration successful",user:newUser, token: token});
+        return res
+        .cookie('token', token, {httpOnly: true})
+        .status(201).json({message: "Registration successful",user:newUser});
+        
     }
     catch(error) {
         return res.status(500).json({message:"Something went wrong", error: error.message});
     }
-})
+}
+
+export {signup}

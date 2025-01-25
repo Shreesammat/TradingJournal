@@ -1,9 +1,14 @@
-const mongoose = require('mongoose');
-const env = require('dotenv').config();
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const mongoUrl = process.env.MONGO_URL;
 
-mongoose.connect(mongoUrl().then(() => console.log('Connected to MongoDB')).catch(err => console.log(err)));
+mongoose
+    .connect(mongoUrl)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.log(err));
 
 const userSchema = new mongoose.Schema({
     username:
@@ -29,4 +34,4 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);
