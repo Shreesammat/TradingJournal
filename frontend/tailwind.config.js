@@ -9,7 +9,7 @@ export default {
       colors: {
         primary: '#FFFFFF', // White
         secondary: '#040403', // Black
-        tertiary: '#F5F0F6', // Magnolia 
+        tertiary: '#EFEFEF', // Magnolia
         reddo: '#F72C25', // Red
         greeno: '#65B891', // Green
       }
