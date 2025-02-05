@@ -3,7 +3,15 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
 const app = express();
+
+//load env variables
+dotenv.config();
+
+//connect to DB
+connectDB();
 
 app.use(cors({
     origin: '*',
@@ -14,7 +22,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.options('*', cors());
 
-app.get('/', );
+app.get('/', (req, res) => {
+    res.send('Welcome to the Trading Journal API!');
+});
 
 app.use('/auth', authRouter);
 app.use('/user', userRouter);

@@ -1,10 +1,8 @@
 import express from 'express'
+import {getUserProfile} from '../controllers/userController.js'
+import authMiddleware from '../middlewares/authMiddleware.js';
+const userRouter = express.Router();
 
-const userRoutes = express.Router();
+userRouter.get('/profile', authMiddleware, getUserProfile);
 
-userRoutes.get('/profile', profile)
-userRoutes.get('/heatmap', heatmap)
-userRoutes.get('/journals', getJournals)
-userRoutes.post('/newJournal', newJournal)
-
-export default userRoutes
+export default userRouter
