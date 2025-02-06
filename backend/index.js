@@ -5,7 +5,11 @@ import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
+import setupSwagger from './swaggerConfig.js';
 const app = express();
+
+//setup Swagger docs
+setupSwagger(app);
 
 //load env variables
 dotenv.config();

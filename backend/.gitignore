@@ -1,9 +1,29 @@
+# Node modules
 node_modules/
-.npm
+
+# Environment files
 .env
 
+# Logs
+*.log
+
+# Yarn lock file (optional)
+yarn.lock
+
+# NPM lock file (optional, if not using Yarn)
+package-lock.json
+
+# IDE/editor-specific files
 .vscode/
 .idea/
 
+# Temporary files
+.DS_Store
+npm-debug.log
+
+# Build artifacts
 dist/
 build/
+
+# Coverage reports
+coverage/

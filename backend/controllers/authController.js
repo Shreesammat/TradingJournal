@@ -4,6 +4,52 @@ import jwt from 'jsonwebtoken';
 
 //@desc Register new User
 
+/**
+ * @swagger
+ * /auth/signup:
+ *   post:
+ *     summary: Register a new user
+ *     description: Registers a new user with the provided username, email, and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Registration successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     profilePhoto:
+ *                       type: string
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Email already in use.
+ *       500:
+ *         description: Internal server error.
+ */
+
 const signup = async (req, res) => {
     const {username, email, password} = req.body;
     console.log('signup endpoint hit', req.body);
@@ -55,6 +101,48 @@ const signup = async (req, res) => {
 }
 
 //@desc Login User
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login an existing user
+ *     description: Logs in an existing user with their email and password and generates a JWT token.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Login successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     profilePhoto:
+ *                       type: string
+ *       400:
+ *         description: Invalid credentials or user not found.
+ *       500:
+ *         description: Internal server error.
+ */
 
 const login = async (req, res) => {
   const { email, password } = req.body;
