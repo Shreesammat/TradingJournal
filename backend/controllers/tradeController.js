@@ -1,25 +1,7 @@
 import express from 'express'
-import User from '../models/User';
-import Trade from '../models/Trade';
 
 const getUserTrades = async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        const trades = await Trade.find({userId: userId});
-
-        return res.status(200).json({
-            success: true,
-            trades: trades.length > 0 ? trades : [],
-            message: trades.length > 0 ? "Trades retrieved successfully!" : "No trades found!",
-        })
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            error: error.message,
-            message: "Server Error!"
-        })
-    }
+    
 }
 
 const getTradeById = async (req, res) => {
@@ -27,16 +9,7 @@ const getTradeById = async (req, res) => {
 }
 
 const createTrade = async (req, res) => {
-    try {
-        const user = req.user;
-        const {}
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            error: error.message,
-            message: "Server Error!"
-        })
-    }
+
 }
 
 const editTrade = async (req, res) => {
