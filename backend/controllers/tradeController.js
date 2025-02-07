@@ -1,4 +1,4 @@
-import Trade from '../models/Trade';
+import Trade from '../models/Trade.js'
 
 const getUserTrades = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ const createTrade = async (req, res) => {
         const { entryTime, exitTime, entryPrice, exitPrice, pnl, emotions, psychology, chartScreenShots, learnings } = req.body;
 
         const newTrade = new Trade({
-            userId: req.user._id,  // Use the logged-in user's ID
+            userId: req.user.id,  // Use the logged-in user's ID
             entryTime,
             exitTime,
             entryPrice,

@@ -5,7 +5,7 @@ const tradeRouter = express.Router();
 
 tradeRouter.get('/getUserTrades', verifyJWT, getUserTrades)
 tradeRouter.get('/getTradeById', verifyJWT, getTradeById)
-tradeRouter.post('/newTrade', verifyJWT, createTrade)
+tradeRouter.post('/createTrade', verifyJWT, createTrade)
 tradeRouter.put('/editTrade', verifyJWT, editTrade)
 tradeRouter.delete('/deleteTrade', verifyJWT, deleteTrade)
 tradeRouter.delete('/deleteUserTrades', verifyJWT, deleteUserTrades)
