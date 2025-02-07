@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
  * /auth/signup:
  *   post:
  *     summary: Register a new user
- *     description: Registers a new user with the provided username, email, and password.
+ *     description: Registers a new user with the provided name, email, and password.
  *     requestBody:
  *       required: true
  *       content:
@@ -17,7 +17,7 @@ import jwt from 'jsonwebtoken';
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               name:
  *                 type: string
  *               email:
  *                 type: string
@@ -36,7 +36,7 @@ import jwt from 'jsonwebtoken';
  *                 user:
  *                   type: object
  *                   properties:
- *                     username:
+ *                     name:
  *                       type: string
  *                     email:
  *                       type: string
@@ -51,7 +51,7 @@ import jwt from 'jsonwebtoken';
  */
 
 const signup = async (req, res) => {
-    const {username, email, password} = req.body;
+    const {name, email, password} = req.body;
     console.log('signup endpoint hit', req.body);
     try {
         console.log("🔹 Checking if user already exists...");
@@ -66,7 +66,7 @@ const signup = async (req, res) => {
 
         console.log("🔹 Creating new user...");
         const newUser = new User({
-            username,
+            name,
             email,
             password: hashedPassword,
             imageUrl: ''
@@ -78,7 +78,7 @@ const signup = async (req, res) => {
         //Generate token
         console.log("🔹 Generating token...");
         const token = jwt.sign(
-            {id: newUser._id, username: newUser.username, email: newUser.email},
+            {id: newUser._id, name: newUser.name, email: newUser.email},
             process.env.JWT_SECRET,
             {expiresIn: "1D"}
         )
@@ -132,7 +132,7 @@ const signup = async (req, res) => {
  *                 user:
  *                   type: object
  *                   properties:
- *                     username:
+ *                     name:
  *                       type: string
  *                     email:
  *                       type: string
@@ -163,7 +163,7 @@ const login = async (req, res) => {
     const token = jwt.sign(
       {
         id: existingUser._id,
-        username: existingUser.username,
+        name: existingUser.name,
         email: existingUser.email,
       },
       process.env.JWT_SECRET,
@@ -174,7 +174,7 @@ const login = async (req, res) => {
     delete userWithoutPassword.password;
 
     return res
-      .cookie("token", token, { httpOnly: true })
+      .cookie('token', token, { httpOnly: true, secure: false })
       .status(201)
       .json({ message: "Login successful", user: userWithoutPassword });
   } catch (error) {

@@ -16,28 +16,26 @@ const tradeSchema = new mongoose.Schema(
             required: true
         },
         entryPrice: {
-            type: String,
+            type: Number,
             required: true,
         },
         exitPrice: {
-            type: String,
+            type: Number,
             required: true, 
         },
         pnl: {
-            type: String,
+            type: Number,
             required: true
         },
         emotions: {
             type:String,
-            required: true,
             default: ''
         },
         psychology: {
             type: String,
-            required: true,
             default: ''
         },
-        chatScreenShots: {
+        chartScreenShots: {
             type: String, // only a url reference
             default:null
         },
@@ -53,6 +51,9 @@ const tradeSchema = new mongoose.Schema(
             type: Date,
             default: Date.now
         }
+    }, 
+    {
+        timestamps: true,
     }
 )
 
