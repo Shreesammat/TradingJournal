@@ -23,6 +23,10 @@ const tradeSchema = new mongoose.Schema(
             type: Number,
             required: true, 
         },
+        buy: {
+            type: Boolean,
+            required: true,
+        },
         pnl: {
             type: Number,
             required: true

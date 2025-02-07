@@ -26,14 +26,15 @@ const getTradeById = async (req, res) => {
 
 const createTrade = async (req, res) => {
     try {
-        const { entryTime, exitTime, entryPrice, exitPrice, pnl, emotions, psychology, chartScreenShots, learnings } = req.body;
-
+        const { entryTime, exitTime, entryPrice, exitPrice, buy, emotions, psychology, chartScreenShots, learnings } = req.body;
+        const pnl = buy ? (exitPrice-entryPrice): (entryPrice-exitPrice);
         const newTrade = new Trade({
             userId: req.user.id,  // Use the logged-in user's ID
             entryTime,
             exitTime,
             entryPrice,
             exitPrice,
+            buy,
             pnl,
             emotions,
             psychology,
