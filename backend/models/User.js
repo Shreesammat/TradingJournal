@@ -28,15 +28,7 @@ const userSchema = new mongoose.Schema(
     totalTrades: {
         type: Number,
         default:0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now, // Timestamp when the user was created
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now, // Timestamp when the user was last updated
-    },
+    }
 }, {
     timestamps: true,
 })

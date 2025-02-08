@@ -1,4 +1,5 @@
 import Trade from '../models/Trade.js'
+import User from '../models/User.js';
 
 const getUserTrades = async (req, res) => {
     try {
@@ -21,7 +22,38 @@ const getUserTrades = async (req, res) => {
 }
 
 const getTradeById = async (req, res) => {
+    try {
+        const {tradeId} = req.body;
 
+        const trade = await Trade.findById(tradeId);
+
+        if(!trade) {
+            return res.status(404).json({
+                success: false,
+                message: 'No trades found with the ID'
+            })
+        }
+
+        if(trade.userId.toString() !== req.user.id) {
+            return res.status(400).json({
+                success: false,
+                message: 'You can only access trades owned by you!'
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Trade fetched successfully!',
+            trade: trade
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message,
+            message: 'Server error!'
+        })
+    }
 }
 
 const createTrade = async (req, res) => {
@@ -44,7 +76,11 @@ const createTrade = async (req, res) => {
 
         await newTrade.save();
 
-        return res.status(200).json({
+        const user = User.findByIdAndUpdate(req.user.id, {
+            $inc: {totalTrades: 1, netPnl: pnl}
+        });
+
+        return res.status(201).json({
             success: true,
             message:"Journal Created Successfully!",
             trade: newTrade
@@ -72,6 +108,13 @@ const editTrade = async (req, res) => {
             });
         }
 
+        if(trade.userId.toString() !== req.user.id) {
+            return res.status(400).json({
+                success: false,
+                message: 'You can only access trades owned by you!'
+            })
+        }
+
         const updatedEntryPrice = entryPrice !== undefined ? entryPrice : trade.entryPrice;
         const updatedExitPrice = exitPrice !== undefined ? exitPrice : trade.exitPrice;
         const updatedBuy = buy !== undefined ? buy : trade.buy;
@@ -94,9 +137,13 @@ const editTrade = async (req, res) => {
             tradeId,
             {$set: updateData },
             {new: true}
-        )
+        );
 
-        return res.status(200).json({
+        await User.findByIdAndUpdate(req.user.id, {
+            $inc: {netPnl: newPnl - trade.pnl}
+        })
+
+        return res.status(201).json({
             success: true,
             message: 'Trade updated Successfully!',
             trade: updatedTrade,
@@ -119,7 +166,6 @@ const deleteTrade = async (req, res) => {
         if( !trade ) {
             return res.status(404).json({
                 success: false,
-                error: error.message,
                 message: 'Failed to find the trade!'
             })
         }
@@ -127,12 +173,15 @@ const deleteTrade = async (req, res) => {
         if(trade.userId.toString() !== userId) {
             return res.status(403).json({
                 success: false,
-                error: error.message,
                 message: 'Unauthorized! You can only delete trades owned by you!'
             })
         }
 
         await trade.deleteOne();
+
+        await User.findByIdAndUpdate(req.user.id, {
+            $set: {netPnl: -trade.pnl, totalTrades: -1}
+        })
 
         return res.status(200).json({
             success: true,
@@ -150,7 +199,6 @@ const deleteTrade = async (req, res) => {
 const deleteUserTrades = async (req, res) => {
     try {
         const userId = req.user.id;
-
         const result = await Trade.deleteMany({ userId: userId});
 
         return res.status(200).json({
@@ -160,10 +208,10 @@ const deleteUserTrades = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: 'Server errror!',
+            message: 'Server error!',
             error: error.message
         })
     }
 }
- 
+
 export {getUserTrades, getTradeById, createTrade, editTrade, deleteTrade, deleteUserTrades}
