@@ -59,7 +59,55 @@ const createTrade = async (req, res) => {
 }
 
 const editTrade = async (req, res) => {
+    try {
+        const {tradeId, entryPrice, exitPrice, buy, ...updateFields } = req.body;
 
+        const trade = await Trade.findById(tradeId);
+
+        if(!trade) {
+            return res.status(404).json({
+                success:false,
+                message: 'No trade exists with this Id!',
+                error: 'Trade not found!'
+            });
+        }
+
+        const updatedEntryPrice = entryPrice !== undefined ? entryPrice : trade.entryPrice;
+        const updatedExitPrice = exitPrice !== undefined ? exitPrice : trade.exitPrice;
+        const updatedBuy = buy !== undefined ? buy : trade.buy;
+        let updatedPnl = trade.pnl;
+
+        if (entryPrice !== undefined || exitPrice !== undefined || buy !== undefined) {
+            updatedPnl = updatedBuy ? (updatedExitPrice - updatedEntryPrice) : (updatedEntryPrice - updatedExitPrice);
+        }
+
+
+        const updateData = {
+            ...updateFields,  // Include other fields (e.g., emotions, psychology, learnings)
+            entryPrice: updatedEntryPrice,
+            exitPrice: updatedExitPrice,
+            buy: updatedBuy,
+            pnl: updatedPnl,
+        };
+
+        const updatedTrade = await Trade.findByIdAndUpdate(
+            tradeId,
+            {$set: updateData },
+            {new: true}
+        )
+
+        return res.status(200).json({
+            success: true,
+            message: 'Trade updated Successfully!',
+            trade: updatedTrade,
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message || "Server error!",
+            message: 'Failed to update trade!'
+        })
+    }
 }
 
 const deleteTrade = async (req, res) => {
