@@ -111,11 +111,59 @@ const editTrade = async (req, res) => {
 }
 
 const deleteTrade = async (req, res) => {
+    try {
+        const {tradeId} = req.body;
+        const userId = req.user.id;
+        const trade = await Trade.findById(tradeId);
 
+        if( !trade ) {
+            return res.status(404).json({
+                success: false,
+                error: error.message,
+                message: 'Failed to find the trade!'
+            })
+        }
+
+        if(trade.userId.toString() !== userId) {
+            return res.status(403).json({
+                success: false,
+                error: error.message,
+                message: 'Unauthorized! You can only delete trades owned by you!'
+            })
+        }
+
+        await trade.deleteOne();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Trade deleted successfully!'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message,
+            message: 'Server error!'
+        })
+    }
 }
 
 const deleteUserTrades = async (req, res) => {
-    
+    try {
+        const userId = req.user.id;
+
+        const result = await Trade.deleteMany({ userId: userId});
+
+        return res.status(200).json({
+            success: true,
+            message: `Deleted ${result.deletedCount} trades successfully!`
+        }) 
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server errror!',
+            error: error.message
+        })
+    }
 }
  
 export {getUserTrades, getTradeById, createTrade, editTrade, deleteTrade, deleteUserTrades}
