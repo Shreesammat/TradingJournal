@@ -20,8 +20,8 @@ const createTradeSchema = Joi.object({
         "number.positive": "Exit price must be a positive value.",
         "any.required": "Exit price is required."
     }),
-    buy: Joi.boolean().required().messages({
-        "boolean.base": "Buy must be either true (buy) or false (sell).",
+    tradeType: Joi.string().valid('buy', 'sell').required().messages({
+        "any.only": "tradeType can only be 'buy' or 'sell'!",
         "any.required": "Buy field is required."
     }),
     emotions: Joi.string().allow("").optional().messages({

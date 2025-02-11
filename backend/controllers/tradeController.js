@@ -1,5 +1,7 @@
+import {updateHeatmapStats, deleteHeatmapStats} from './HeatmapController.js'
 import Trade from '../models/Trade.js'
 import User from '../models/User.js';
+import HeatmapStats from '../models/Heatmap.js';
 
 const getUserTrades = async (req, res) => {
     try {
@@ -23,7 +25,7 @@ const getUserTrades = async (req, res) => {
 
 const getTradeById = async (req, res) => {
     try {
-        const {tradeId} = req.body;
+        const {tradeId} = req.params;
 
         const trade = await Trade.findById(tradeId);
 
@@ -35,7 +37,7 @@ const getTradeById = async (req, res) => {
         }
 
         if(trade.userId.toString() !== req.user.id) {
-            return res.status(400).json({
+            return res.status(403).json({
                 success: false,
                 message: 'You can only access trades owned by you!'
             })
@@ -58,15 +60,15 @@ const getTradeById = async (req, res) => {
 
 const createTrade = async (req, res) => {
     try {
-        const { entryTime, exitTime, entryPrice, exitPrice, buy, emotions, psychology, chartScreenShots, learnings } = req.body;
-        const pnl = buy ? (exitPrice-entryPrice): (entryPrice-exitPrice);
+        const { entryTime, exitTime, entryPrice, exitPrice, tradeType, emotions, psychology, chartScreenShots, learnings } = req.body;
+        const pnl = tradeType === 'buy' ? (exitPrice-entryPrice): (entryPrice-exitPrice);
         const newTrade = new Trade({
             userId: req.user.id,  // Use the logged-in user's ID
             entryTime,
             exitTime,
             entryPrice,
             exitPrice,
-            buy,
+            tradeType,
             pnl,
             emotions,
             psychology,
@@ -76,9 +78,11 @@ const createTrade = async (req, res) => {
 
         await newTrade.save();
 
-        const user = User.findByIdAndUpdate(req.user.id, {
+        const user = await User.findByIdAndUpdate(req.user.id, {
             $inc: {totalTrades: 1, netPnl: pnl}
         });
+
+        await updateHeatmapStats(true, req.user.id, newTrade.createdAt, pnl);
 
         return res.status(201).json({
             success: true,
@@ -96,7 +100,8 @@ const createTrade = async (req, res) => {
 
 const editTrade = async (req, res) => {
     try {
-        const {tradeId, entryPrice, exitPrice, buy, ...updateFields } = req.body;
+        const { tradeId } = req.params;
+        const { entryPrice, exitPrice, tradeType, ...updateFields } = req.body;
 
         const trade = await Trade.findById(tradeId);
 
@@ -109,7 +114,7 @@ const editTrade = async (req, res) => {
         }
 
         if(trade.userId.toString() !== req.user.id) {
-            return res.status(400).json({
+            return res.status(403).json({
                 success: false,
                 message: 'You can only access trades owned by you!'
             })
@@ -117,19 +122,15 @@ const editTrade = async (req, res) => {
 
         const updatedEntryPrice = entryPrice !== undefined ? entryPrice : trade.entryPrice;
         const updatedExitPrice = exitPrice !== undefined ? exitPrice : trade.exitPrice;
-        const updatedBuy = buy !== undefined ? buy : trade.buy;
-        let updatedPnl = trade.pnl;
+        const updatedTradeType = tradeType !== undefined ? tradeType : trade.tradeType;
 
-        if (entryPrice !== undefined || exitPrice !== undefined || buy !== undefined) {
-            updatedPnl = updatedBuy ? (updatedExitPrice - updatedEntryPrice) : (updatedEntryPrice - updatedExitPrice);
-        }
-
+        const updatedPnl = updatedTradeType === 'buy' ? (updatedExitPrice - updatedEntryPrice) : (updatedEntryPrice - updatedExitPrice);
 
         const updateData = {
             ...updateFields,  // Include other fields (e.g., emotions, psychology, learnings)
             entryPrice: updatedEntryPrice,
             exitPrice: updatedExitPrice,
-            buy: updatedBuy,
+            tradeType: updatedTradeType,
             pnl: updatedPnl,
         };
 
@@ -140,7 +141,7 @@ const editTrade = async (req, res) => {
         );
 
         await User.findByIdAndUpdate(req.user.id, {
-            $inc: {netPnl: newPnl - trade.pnl}
+            $inc: {netPnl: updatedPnl - trade.pnl}
         })
 
         return res.status(201).json({
@@ -159,7 +160,7 @@ const editTrade = async (req, res) => {
 
 const deleteTrade = async (req, res) => {
     try {
-        const {tradeId} = req.body;
+        const {tradeId} = req.params;
         const userId = req.user.id;
         const trade = await Trade.findById(tradeId);
 
@@ -177,11 +178,15 @@ const deleteTrade = async (req, res) => {
             })
         }
 
+        const dateCreated = trade.createdAt;
+        const pnlChange = - trade.pnl;
         await trade.deleteOne();
 
         await User.findByIdAndUpdate(req.user.id, {
-            $set: {netPnl: -trade.pnl, totalTrades: -1}
+            $inc: {netPnl: pnlChange, totalTrades: -1}
         })
+
+        await updateHeatmapStats(false, req.user.id, dateCreated, pnlChange);
 
         return res.status(200).json({
             success: true,
@@ -200,7 +205,7 @@ const deleteUserTrades = async (req, res) => {
     try {
         const userId = req.user.id;
         const result = await Trade.deleteMany({ userId: userId});
-
+        await HeatmapStats.deleteMany({userId: userId});
         return res.status(200).json({
             success: true,
             message: `Deleted ${result.deletedCount} trades successfully!`

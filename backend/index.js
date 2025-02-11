@@ -6,7 +6,8 @@ import userRouter from './routes/userRouter.js';
 import tradeRouter from './routes/tradeRouter.js';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-import setupSwagger from './swaggerConfig.js';
+import setupSwagger from './config/swaggerConfig.js';
+import heatmapRouter from './routes/heatmapRouter.js';
 const app = express();
 
 //setup Swagger docs
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/trade', tradeRouter);
+app.use('/heatmap', heatmapRouter);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on: http://localhost:${process.env.PORT || 3000}`);

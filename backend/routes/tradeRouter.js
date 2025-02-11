@@ -4,6 +4,8 @@ import { getUserTrades, getTradeById, createTrade, editTrade, deleteTrade, delet
 import createTradeValidation from '../middlewares/validations/createTradeValidation.js'
 import editTradeValidation from '../middlewares/validations/editTradeValidation.js';
 import deleteTradeValidation from '../middlewares/validations/deleteTradeValidation.js';
+import { uploadImage, deleteImage } from '../controllers/imageController.js';
+import { uploadTradeImage } from '../middlewares/multerUpload.js';
 
 const tradeRouter = express.Router();
 
@@ -35,7 +37,7 @@ tradeRouter.get('/getUserTrades', verifyJWT, getUserTrades);
 
 /**
  * @swagger
- * /trade/getTradeById:
+ * /trade/getTradeById/{tradeId}:
  *   get:
  *     summary: Retrieve a specific trade by ID
  *     tags: [Trade]
@@ -43,7 +45,7 @@ tradeRouter.get('/getUserTrades', verifyJWT, getUserTrades);
  *       - bearerAuth: []
  *     description: Fetches details of a specific trade using its unique identifier.
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: tradeId
  *         required: true
  *         schema:
@@ -58,7 +60,7 @@ tradeRouter.get('/getUserTrades', verifyJWT, getUserTrades);
  *       500:
  *         description: Internal server error.
  */
-tradeRouter.get('/getTradeById', verifyJWT, getTradeById);
+tradeRouter.get('/getTradeById/:tradeId', verifyJWT, getTradeById);
 
 /**
  * @swagger
@@ -103,13 +105,19 @@ tradeRouter.post('/createTrade', verifyJWT, createTradeValidation, createTrade);
 
 /**
  * @swagger
- * /trade/editTrade:
+ * /trade/editTrade/{tradeId}:
  *   put:
  *     summary: Update an existing trade
  *     tags: [Trade]
  *     security:
  *       - bearerAuth: []
  *     description: Modifies details of an existing trade.
+ *     parameters:
+ *       - in: path
+ *         name: tradeId
+ *         required: true
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -117,8 +125,6 @@ tradeRouter.post('/createTrade', verifyJWT, createTradeValidation, createTrade);
  *           schema:
  *             type: object
  *             properties:
- *               tradeId:
- *                 type: string
  *               entryPrice:
  *                 type: number
  *               exitPrice:
@@ -135,11 +141,11 @@ tradeRouter.post('/createTrade', verifyJWT, createTradeValidation, createTrade);
  *       500:
  *         description: Internal server error.
  */
-tradeRouter.put('/editTrade', verifyJWT, editTradeValidation, editTrade);
+tradeRouter.put('/editTrade/:tradeId', verifyJWT, editTradeValidation, editTrade);
 
 /**
  * @swagger
- * /trade/deleteTrade:
+ * /trade/deleteTrade/{tradeId}:
  *   delete:
  *     summary: Remove a trade by ID
  *     tags: [Trade]
@@ -147,7 +153,7 @@ tradeRouter.put('/editTrade', verifyJWT, editTradeValidation, editTrade);
  *       - bearerAuth: []
  *     description: Deletes a specific trade from the user's account.
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: tradeId
  *         required: true
  *         schema:
@@ -164,7 +170,7 @@ tradeRouter.put('/editTrade', verifyJWT, editTradeValidation, editTrade);
  *       500:
  *         description: Internal server error.
  */
-tradeRouter.delete('/deleteTrade', verifyJWT, deleteTradeValidation, deleteTrade);
+tradeRouter.delete('/deleteTrade/:tradeId', verifyJWT, deleteTradeValidation, deleteTrade);
 
 /**
  * @swagger
@@ -184,5 +190,10 @@ tradeRouter.delete('/deleteTrade', verifyJWT, deleteTradeValidation, deleteTrade
  *         description: Internal server error.
  */
 tradeRouter.delete('/deleteUserTrades', verifyJWT, deleteUserTrades);
+
+
+tradeRouter.post('/uploadImage', verifyJWT, uploadTradeImage.single("image"), uploadImage);
+
+tradeRouter.delete('/deleteImage', verifyJWT, deleteImage);
 
 export default tradeRouter;

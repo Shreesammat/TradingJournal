@@ -23,9 +23,10 @@ const tradeSchema = new mongoose.Schema(
             type: Number,
             required: true, 
         },
-        buy: {
-            type: Boolean,
-            required: true,
+        tradeType: {
+            type: String,
+            enum: ["buy", "sell"],
+            required: true
         },
         pnl: {
             type: Number,
@@ -47,15 +48,7 @@ const tradeSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now
-        }
-    }, 
+    },
     {
         timestamps: true,
     }

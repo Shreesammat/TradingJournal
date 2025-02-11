@@ -2,6 +2,8 @@ import express from 'express';
 import { getUserProfile, updateUserProfile } from '../controllers/userController.js';
 import verifyJWT from '../middlewares/verifyJWT.js';
 import nameValidation from '../middlewares/validations/nameValidation.js';
+import { uploadProfileImage } from '../middlewares/multerUpload.js';
+import { deleteImage, uploadImage } from '../controllers/imageController.js';
 
 const userRouter = express.Router();
 
@@ -65,5 +67,9 @@ userRouter.get('/getProfile', verifyJWT, getUserProfile);
  *         description: Internal server error.
  */
 userRouter.put('/updateProfile', verifyJWT, nameValidation, updateUserProfile);
+
+userRouter.post('/uploadProfileImage', verifyJWT, uploadProfileImage.single("image"), uploadImage);
+
+userRouter.delete('/deleteProfileImage', verifyJWT, deleteImage)
 
 export default userRouter;
