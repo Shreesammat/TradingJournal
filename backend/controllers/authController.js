@@ -46,8 +46,8 @@ const signup = async (req, res) => {
         .cookie('token', token, {httpOnly: true})
         .status(201).json({message: "Registration successful",user: userWithoutPassword, success: true});
         
-    }
-    catch(error) {
+          }
+          catch(error) {
         console.log("🔴 Signup failed! Error:", error.message);
         return res.status(500).json({message:"Something went wrong", error: error.message});
         
@@ -57,21 +57,29 @@ const signup = async (req, res) => {
 //@desc Login User
 
 const login = async (req, res) => {
+  console.log("🔹 Login endpoint hit", req.body);
   const { email, password } = req.body;
 
   try {
+    console.log("🔹 Checking if user exists...");
     const existingUser = await User.findOne({ email: email });
-    if (!existingUser)
+    if (!existingUser) {
+      console.log("🔴 User does not exist!");
       return res.status(400).json({ message: "User does not exist!" });
+    }
 
+    console.log("🔹 Comparing password...");
     const isPasswordCorrect = await bcrypt.compare(
       password,
       existingUser.password
     );
-    if (!isPasswordCorrect)
+    if (!isPasswordCorrect) {
+      console.log("🔴 Invalid credentials!");
       return res.status(400).json({ message: "Invalid credentials!" });
+    }
 
     //Generate token
+    console.log("🔹 Generating token...");
     const token = jwt.sign(
       {
         id: existingUser._id,
@@ -85,11 +93,13 @@ const login = async (req, res) => {
     const userWithoutPassword = existingUser.toObject();
     delete userWithoutPassword.password;
 
+    console.log("✅ Login successful!");
     return res
       .cookie('token', token, { httpOnly: true, secure: false })
-      .status(201)
+      .status(200)
       .json({ message: "Login successful", user: userWithoutPassword });
   } catch (error) {
+    console.log("🔴 Login failed! Error:", error.message);
     return res
       .status(500)
       .json({ message: "Something went wrong", error: error.message });

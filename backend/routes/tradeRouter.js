@@ -1,6 +1,6 @@
 import express from 'express'
 import verifyJWT from '../middlewares/verifyJWT.js';
-import { getUserTrades, getTradeById, createTrade, editTrade, deleteTrade, deleteUserTrades } from '../controllers/tradeController.js'; 
+import { getUserTrades, getTradeById, createTrade, editTrade, deleteTrade, deleteUserTrades} from '../controllers/tradeController.js'; 
 import createTradeValidation from '../middlewares/validations/createTradeValidation.js'
 import editTradeValidation from '../middlewares/validations/editTradeValidation.js';
 import deleteTradeValidation from '../middlewares/validations/deleteTradeValidation.js';
@@ -106,7 +106,7 @@ tradeRouter.post('/createTrade', verifyJWT, createTradeValidation, createTrade);
 /**
  * @swagger
  * /trade/editTrade/{tradeId}:
- *   put:
+ *   patch:
  *     summary: Update an existing trade
  *     tags: [Trade]
  *     security:
@@ -141,7 +141,7 @@ tradeRouter.post('/createTrade', verifyJWT, createTradeValidation, createTrade);
  *       500:
  *         description: Internal server error.
  */
-tradeRouter.put('/editTrade/:tradeId', verifyJWT, editTradeValidation, editTrade);
+tradeRouter.patch('/editTrade/:tradeId', verifyJWT, editTradeValidation, editTrade);
 
 /**
  * @swagger
@@ -190,7 +190,6 @@ tradeRouter.delete('/deleteTrade/:tradeId', verifyJWT, deleteTradeValidation, de
  *         description: Internal server error.
  */
 tradeRouter.delete('/deleteUserTrades', verifyJWT, deleteUserTrades);
-
 
 tradeRouter.post('/uploadImage', verifyJWT, uploadTradeImage.single("image"), uploadImage);
 

@@ -14,7 +14,7 @@ const deleteTradeSchema = await Joi.object({
 })
 
 const deleteTradeValidation = async (req, res, next) => {
-    const {error} = await deleteTradeSchema.validate(req.body);
+    const {error} = await deleteTradeSchema.validate(req.params);
 
     if (error) {
         return res.status(400).json({

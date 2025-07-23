@@ -7,6 +7,10 @@ const tradeSchema = new mongoose.Schema(
             ref: 'User',
             required: true
         },
+        index: {
+            type: String,
+            required: true
+        },
         entryTime: {
             type: Date,
             required: true
@@ -25,27 +29,31 @@ const tradeSchema = new mongoose.Schema(
         },
         tradeType: {
             type: String,
-            enum: ["buy", "sell"],
+            enum: ["Buy", "Sell"],
             required: true
+        },
+        quantity: {
+            type: Number,
+            required: true,
         },
         pnl: {
             type: Number,
             required: true
         },
         emotions: {
-            type:String,
+            type:[{type: String}],
             default: ''
         },
         psychology: {
-            type: String,
+            type: [{type: String}],
             default: ''
         },
-        chartScreenShots: {
-            type: String, // only a url reference
+        chartImage: {
+            type: String,
             default:null
         },
         learnings: {
-            type: String,
+            type: [{type: String}],
             required: true
         },
     },
