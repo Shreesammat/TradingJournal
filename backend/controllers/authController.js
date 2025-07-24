@@ -106,4 +106,25 @@ const login = async (req, res) => {
   }
 };
 
-export {signup, login}
+// @desc Logout User
+const logout = (req, res) => {
+  console.log("🔹 Logout endpoint hit");
+
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // true in production
+      sameSite: 'strict',
+    });
+
+    console.log("✅ Logout successful!");
+    return res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.log("🔴 Logout failed! Error:", error.message);
+    return res
+      .status(500)
+      .json({ message: 'Something went wrong', error: error.message });
+  }
+};
+
+export {signup, login, logout}

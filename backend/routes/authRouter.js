@@ -1,5 +1,6 @@
 import express from 'express';
-import { signup, login } from '../controllers/authController.js';
+import { signup, login, logout } from '../controllers/authController.js';
+import verifyJWT from '../middlewares/verifyJWT.js';
 
 const authRouter = express.Router();
 
@@ -67,5 +68,7 @@ authRouter.post('/signup', signup);
  *         description: Internal server error.
  */
 authRouter.post('/login', login);
+
+authRouter.post('/logout',verifyJWT, logout);
 
 export default authRouter;

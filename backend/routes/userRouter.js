@@ -1,5 +1,12 @@
 import express from 'express';
-import { getUserProfile, updateUserProfile } from '../controllers/userController.js';
+import {
+  getUserProfile,
+  updateUserProfile,
+  totalSummary,
+  weeklySummary,
+  topEmotions,
+  mostRecentLearnings,
+} from '../controllers/userController.js';
 import verifyJWT from '../middlewares/verifyJWT.js';
 import nameValidation from '../middlewares/validations/nameValidation.js';
 import { uploadProfileImage } from '../middlewares/multerUpload.js';
@@ -11,8 +18,10 @@ const userRouter = express.Router();
  * @swagger
  * tags:
  *   name: User
- *   description: User profile management endpoints
+ *   description: User profile and analytics endpoints
  */
+
+// -------------------- Profile --------------------
 
 /**
  * @swagger
@@ -68,8 +77,93 @@ userRouter.get('/getProfile', verifyJWT, getUserProfile);
  */
 userRouter.put('/updateProfile', verifyJWT, nameValidation, updateUserProfile);
 
-userRouter.post('/uploadProfileImage', verifyJWT, uploadProfileImage.single("image"), uploadImage);
+// -------------------- Image Upload --------------------
 
-userRouter.delete('/deleteProfileImage', verifyJWT, deleteImage)
+userRouter.post(
+  '/uploadProfileImage',
+  verifyJWT,
+  uploadProfileImage.single('image'),
+  uploadImage
+);
+
+userRouter.delete('/deleteProfileImage', verifyJWT, deleteImage);
+
+// -------------------- Analytics Routes --------------------
+
+/**
+ * @swagger
+ * /user/totalSummary:
+ *   get:
+ *     summary: Get total trading summary
+ *     tags: [User]
+ *     description: Returns total number of trades, net PnL, average PnL, and win ratio.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully fetched total summary.
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal server error.
+ */
+userRouter.get('/totalSummary', verifyJWT, totalSummary);
+
+/**
+ * @swagger
+ * /user/weeklySummary:
+ *   get:
+ *     summary: Get weekly trading summary
+ *     tags: [User]
+ *     description: Returns number of trades, net PnL, and average PnL for the last 7 days.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully fetched weekly summary.
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal server error.
+ */
+userRouter.get('/weeklySummary', verifyJWT, weeklySummary);
+
+/**
+ * @swagger
+ * /user/topEmotions:
+ *   get:
+ *     summary: Get top trading emotions
+ *     tags: [User]
+ *     description: Returns the top 3 most frequently selected emotions from user trades.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully fetched top emotions.
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal server error.
+ */
+userRouter.get('/topEmotions', verifyJWT, topEmotions);
+
+/**
+ * @swagger
+ * /user/mostRecentLearnings:
+ *   get:
+ *     summary: Get most recent learnings
+ *     tags: [User]
+ *     description: Returns the latest 5 trades' learnings (flattened).
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully fetched recent learnings.
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal server error.
+ */
+userRouter.get('/mostRecentLearnings', verifyJWT, mostRecentLearnings);
 
 export default userRouter;
