@@ -20,14 +20,7 @@ dotenv.config();
 //connect to DB
 connectDB();
 
-let allowedOrigins = [];
-
-try {
-  allowedOrigins = JSON.parse(process.env.CLIENT); // from .env
-} catch (e) {
-  console.error("Invalid CLIENT env:", e.message);
-  process.exit(1);
-}
+const allowedOrigins = process.env.CLIENT?.split(',') || [];
 
 app.use(cors({
   origin: function (origin, callback) {
