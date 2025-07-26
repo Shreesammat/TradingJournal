@@ -43,7 +43,11 @@ const signup = async (req, res) => {
         delete userWithoutPassword.password;
 
         return res
-        .cookie('token', token, {httpOnly: true})
+        .cookie('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none': 'lax'
+        })
         .status(201).json({message: "Registration successful",user: userWithoutPassword, success: true});
         
           }
@@ -95,7 +99,12 @@ const login = async (req, res) => {
 
     console.log("✅ Login successful!");
     return res
-      .cookie('token', token, { httpOnly: true, secure: false })
+      .cookie('token', token, { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production' ,
+        sameSite: process.env.NODE_ENV === 'production' ? 'none': 'lax'
+      }
+      )
       .status(200)
       .json({ message: "Login successful", user: userWithoutPassword });
   } catch (error) {
