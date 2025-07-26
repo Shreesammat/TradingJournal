@@ -20,11 +20,20 @@ dotenv.config();
 //connect to DB
 connectDB();
 
+const allowedOrigins = JSON.parse(process.env.CLIENT);
+
 app.use(cors({
-    origin: process.env.CLIENT,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.options('*', cors());
