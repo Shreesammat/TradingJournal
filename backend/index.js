@@ -20,22 +20,17 @@ dotenv.config();
 // Connect to the database
 connectDB();
 
-// Get allowed origins from env
-const allowedOrigins = process.env.CLIENT?.split(',') || [];
 
 // Initialize Express
 const app = express();
 
 // CORS config
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.error('❌ CORS BLOCKED:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    process.env.CLIENT1,
+    process.env.CLIENT2,
+    process.env.CLIENT3
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
 };
@@ -72,5 +67,4 @@ app.use('/image', imageRouter);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
-  console.log(`🌐 Allowed origins:`, allowedOrigins);
 });
