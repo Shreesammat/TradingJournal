@@ -128,8 +128,9 @@ const createTrade = async (req, res) => {
       chartImage,
       learnings,
     } = req.body;
+
     const newTrade = new Trade({
-      userId: req.user.id, // Use the logged-in user's ID
+      userId: req.user.id,
       index,
       entryTime,
       exitTime,

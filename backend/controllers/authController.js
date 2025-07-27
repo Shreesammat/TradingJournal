@@ -2,64 +2,63 @@ import User from '../models/User.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-//@desc Register new User
-
+// @desc Register new User
 const signup = async (req, res) => {
-    const {name, email, password} = req.body;
-    console.log('signup endpoint hit', req.body);
-    try {
-        console.log("🔹 Checking if user already exists...");
-        const existingUser = await User.findOne({email: email});
-        if(existingUser) {
-            console.log("🔴 Email already in use!");
-            return res.status(400).json({message: 'Email already in use!'});
-        }
+  const { name, email, password } = req.body;
+  console.log('signup endpoint hit', req.body);
 
-        console.log("🔹 Hashing password...");
-        const hashedPassword = await bcrypt.hash(password, 12);
-
-        console.log("🔹 Creating new user...");
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword,
-            imageUrl: ''
-        })
-
-        console.log("🔹 Saving user to database...");
-        await newUser.save();
-
-        //Generate token
-        console.log("🔹 Generating token...");
-        const token = jwt.sign(
-            {id: newUser._id, name: newUser.name, email: newUser.email},
-            process.env.JWT_SECRET,
-            {expiresIn: "1D"}
-        )
-        
-        console.log("✅ Signup successful!");
-
-        const userWithoutPassword = newUser.toObject();
-        delete userWithoutPassword.password;
-
-        return res
-        .cookie('token', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none': 'lax'
-        })
-        .status(201).json({message: "Registration successful",user: userWithoutPassword, success: true});
-        
-          }
-          catch(error) {
-        console.log("🔴 Signup failed! Error:", error.message);
-        return res.status(500).json({message:"Something went wrong", error: error.message});
-        
+  try {
+    console.log("🔹 Checking if user already exists...");
+    const existingUser = await User.findOne({ email: email });
+    if (existingUser) {
+      console.log("🔴 Email already in use!");
+      return res.status(400).json({ message: 'Email already in use!' });
     }
-}
 
-//@desc Login User
+    console.log("🔹 Hashing password...");
+    const hashedPassword = await bcrypt.hash(password, 12);
 
+    console.log("🔹 Creating new user...");
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      imageUrl: ''
+    });
+
+    console.log("🔹 Saving user to database...");
+    await newUser.save();
+
+    // Generate token
+    console.log("🔹 Generating token...");
+    const token = jwt.sign(
+      { id: newUser._id, name: newUser.name, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    console.log("✅ Signup successful!");
+
+    const userWithoutPassword = newUser.toObject();
+    delete userWithoutPassword.password;
+
+    return res
+      .cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/', // Ensure cookie is set on root path
+      })
+      .status(201)
+      .json({ message: "Registration successful", user: userWithoutPassword, success: true });
+
+  } catch (error) {
+    console.log("🔴 Signup failed! Error:", error.message);
+    return res.status(500).json({ message: "Something went wrong", error: error.message });
+  }
+};
+
+// @desc Login User
 const login = async (req, res) => {
   console.log("🔹 Login endpoint hit", req.body);
   const { email, password } = req.body;
@@ -73,25 +72,18 @@ const login = async (req, res) => {
     }
 
     console.log("🔹 Comparing password...");
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
     if (!isPasswordCorrect) {
       console.log("🔴 Invalid credentials!");
       return res.status(400).json({ message: "Invalid credentials!" });
     }
 
-    //Generate token
+    // Generate token
     console.log("🔹 Generating token...");
     const token = jwt.sign(
-      {
-        id: existingUser._id,
-        name: existingUser.name,
-        email: existingUser.email,
-      },
+      { id: existingUser._id, name: existingUser.name, email: existingUser.email },
       process.env.JWT_SECRET,
-      { expiresIn: "1D" }
+      { expiresIn: "1d" }
     );
 
     const userWithoutPassword = existingUser.toObject();
@@ -99,19 +91,18 @@ const login = async (req, res) => {
 
     console.log("✅ Login successful!");
     return res
-      .cookie('token', token, { 
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production' ,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none': 'lax'
-      }
-      )
+      .cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/', // Consistent path
+      })
       .status(200)
       .json({ message: "Login successful", user: userWithoutPassword });
+
   } catch (error) {
     console.log("🔴 Login failed! Error:", error.message);
-    return res
-      .status(500)
-      .json({ message: "Something went wrong", error: error.message });
+    return res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 };
 
@@ -122,18 +113,18 @@ const logout = (req, res) => {
   try {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/', // MUST match the original path
     });
 
     console.log("✅ Logout successful!");
     return res.status(200).json({ message: 'Logout successful' });
+
   } catch (error) {
     console.log("🔴 Logout failed! Error:", error.message);
-    return res
-      .status(500)
-      .json({ message: 'Something went wrong', error: error.message });
+    return res.status(500).json({ message: 'Something went wrong', error: error.message });
   }
 };
 
-export {signup, login, logout}
+export { signup, login, logout };
