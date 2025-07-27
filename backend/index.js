@@ -23,6 +23,7 @@ connectDB();
 
 // Initialize Express
 const app = express();
+app.set('trust proxy', 1);
 
 // CORS config
 const corsOptions = {
@@ -61,8 +62,7 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/trade', tradeRouter);
 app.use('/heatmap', heatmapRouter);
-app.use('/image', imageRouter);
-app.set('trust proxy', 1);
+app.use('/image', imageRouter); 
 
 // Start the server
 const PORT = process.env.PORT || 3000;
