@@ -62,6 +62,7 @@ app.use('/user', userRouter);
 app.use('/trade', tradeRouter);
 app.use('/heatmap', heatmapRouter);
 app.use('/image', imageRouter);
+app.set('trust proxy', 1);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
